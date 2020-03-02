@@ -32,10 +32,11 @@
     const defaults = {
         src: "data-src",
         srcset: "data-srcset",
-        selector: ".lazyload",
+        selector: ".lazy",
         root: null,
         rootMargin: "0px",
-        threshold: 0
+        threshold: 0,
+		afterLoad : null
     };
 
     /**
@@ -104,6 +105,8 @@
                 threshold: [this.settings.threshold]
             };
 
+			let afterLoad = this.settings.afterLoad || null;
+
             this.observer = new IntersectionObserver(function(entries) {
                 Array.prototype.forEach.call(entries, function (entry) {
                     if (entry.isIntersecting) {
@@ -120,6 +123,10 @@
                         } else {
                             entry.target.style.backgroundImage = "url(" + src + ")";
                         }
+
+						if (afterLoad !== null) {
+							afterLoad(entry.target);
+						}
                     }
                 });
             }, observerConfig);
